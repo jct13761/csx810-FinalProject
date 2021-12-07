@@ -4,6 +4,7 @@
     {
         _Color ("Color", Color) = (1,1,1,1)
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
+        [Header(Toon Properties)][Space(5)]  //light
         _NumLayers ("Num Layers", Int) = 5
         _StartingBound ("Starting Bound", Range(0.1,2.0)) = 0.8
         _IntensityPerStep ("Intensity Per Step", Range(0.01,2.0)) = 0.15
@@ -126,18 +127,8 @@
                 //fixed4 darkColor = fixed4(1,1,1,1);
                 //float4 blendCol = lerp(color, darkColor, 0.1);
                 //float4 blendCol = (color + darkColor) * 0.5;
-               
+                
                 return color;
-                
-                
-
-                /*
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
-                */
             }
             ENDCG
         }
