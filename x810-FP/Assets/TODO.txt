@@ -1,0 +1,6 @@
+To-Do:
+Implement Boids
+Create Boid Playground
+Add custom Shader
+Add computer shader
+Add collision detection for boids
