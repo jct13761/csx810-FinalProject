@@ -1,59 +1,58 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Boid : MonoBehaviour {
-
-    public Vector3 direction;
-    public Vector3 forward;
-    public float speed;
-    public Vector3 velocity;
-    public Vector3 acceleration;
-    private float width = 50.0f, height = 30.0f;
-    float buffer = 1.0f;
+    
+    public Vector3 velocity; // velocity of the boid
+    public Vector3 acceleration; // acceleration value of the boid 
+    
+    private Vector3 forward; // direction the boid is facing
+    private Transform boidTransfrom; // the transform of the boid
+    private Vector3 boidPosition; // the position of the boid
+    private float speed = 10; // the speed of the boid
+    
+    private float width = 50.0f, height = 30.0f; // the width/height of the arena box
+    private float buffer = 1.0f; // a buffer to make the transition from top to bottom more smooth
     
     
     // Start is called before the first frame update
     void Start() {
-        speed = 1;
-        direction = new Vector3(1, 1, 1);
-        this.gameObject.transform.position = new Vector3(0, 15, 0);
-        acceleration = Vector3.zero;
-        forward = this.transform.forward;
-        velocity = forward * speed;
+        //init();
+       
+    } // Start
 
+    /*
+     * Initialize the variables for the boid
+     */
+    public void init(Vector3 spawnPosition) {
+        boidTransfrom = this.transform;
+        acceleration = Vector3.zero;
+        forward = Random.insideUnitSphere;
+        velocity = forward * speed;
     }
 
     // Update is called once per frame
     void Update() {
-
-        Transform boidTransfrom = this.GetComponent<Transform>();
-
-        Debug.Log("pos = " + boidTransfrom.position);
+        // Debug.Log("pos = " + boidTransfrom.position);
         // Debug.Log("Xpos % width = " + (int)boidTransfrom.position.x % 25);
 
-        Vector3 boidPos = boidTransfrom.position;
+        boidPosition = this.transform.position;
         
-        if (boidPos.x < -width/2 + buffer) { // check -/+ of X-axis
-            Debug.Log("pos is less than neg edge");
-            this.gameObject.transform.position = new Vector3(width/2 - buffer, boidPos.y, boidPos.z);
-        }else if (boidPos.x > width/2 - buffer) {
-            Debug.Log("pos is greater than pos edge");
-            this.gameObject.transform.position = new Vector3(-width/2 + buffer, boidPos.y, boidPos.z);
-        } else if (boidPos.y < 0 + buffer) { // check -/+ of Y-axis
-            Debug.Log("pos is less than neg edge");
-            this.gameObject.transform.position = new Vector3(boidPos.x, height - buffer, boidPos.z);
-        } else if (boidPos.y > height - buffer) {
-            Debug.Log("pos is greater than pos edge");
-            this.gameObject.transform.position = new Vector3(boidPos.x,0 + buffer, boidPos.z);
-        } else if (boidPos.z < -width/2 + buffer) { // check -/+ of Z-axis
-            Debug.Log("pos is less than neg edge");
-            this.gameObject.transform.position = new Vector3(boidPos.x, boidPos.y, width/2 - buffer);
-        }else if (boidPos.z > width/2 - buffer) {
-            Debug.Log("pos is greater than pos edge");
-            this.gameObject.transform.position = new Vector3(boidPos.x, boidPos.y, -width/2 + buffer);
-        } 
+        // This is the collision detection for the edges of the arena box
+        if (boidPosition.x < -width/2 + buffer) { // check -/+ of X-axis
+            this.gameObject.transform.position = new Vector3(width/2 - buffer, boidPosition.y, boidPosition.z);
+        }else if (boidPosition.x > width/2 - buffer) {
+            this.gameObject.transform.position = new Vector3(-width/2 + buffer, boidPosition.y, boidPosition.z);
+        } else if (boidPosition.y < 0 + buffer) { // check -/+ of Y-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, height - buffer, boidPosition.z);
+        } else if (boidPosition.y > height - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x,0 + buffer, boidPosition.z);
+        } else if (boidPosition.z < -width/2 + buffer) { // check -/+ of Z-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, width/2 - buffer);
+        }else if (boidPosition.z > width/2 - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, -width/2 + buffer);
+        } // if-else
         
         // Calculate the velocity of the boid
         // add the time as well as any acceleration to make it move
