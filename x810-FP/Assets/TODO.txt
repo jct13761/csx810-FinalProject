@@ -3,3 +3,4 @@ Implement Boids
 Create Boid Playground
 Add compute shader
 Add collision detection for boids
+Make bids have cool shape (Birds, Fish, etc.) 
