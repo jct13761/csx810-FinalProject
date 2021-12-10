@@ -2,6 +2,15 @@
 
 This is my final project for CSCI x810 - Computer Graphics for Fall 2021 at UGA with Dr. Hybinette. For this project, I implemented Boids, an animal flock simulation in Unity.  
 
+## TODO
+* Slides (PDF) - 1) Clickable link on google sheet, and 2) submitted on Odin in directory, 5-7 slides, Clickable link on google sheet -- Before Presentation, OK to make refinements and then submit refinements by `(Tu 12/14)`
+* Code/Software Demo-able - Refinements, cleaning up code, commenting can be submitted after demo `(Th 12/16)`
+* Software/Code - Effort Level 2 x regular project. `(Tu 12/14)`
+* Video/Demo - Link - on piazza FE thread. 3-5 minutes. `(Th 12/16)`
+* Final Report (Survey Monkey)		Q/A Survey monkey. `(Th 12/16)`
+* Check List. `(Th 12/16)`
+
+
 ## Sources
 * Original paper by Craig Reynolds: http://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/
 * Youtuber that introduced me to boids: https://www.youtube.com/watch?v=bqtqltqcQhw
