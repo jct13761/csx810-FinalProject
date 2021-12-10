@@ -64,20 +64,40 @@ public class Boid : MonoBehaviour {
 
             Vector3 offsetToFlockmatesCentre = (centreOfFlockmates - position);
 
-            var alignmentForce = SteerTowards (avgFlockHeading) * settings.alignWeight;
-            var cohesionForce = SteerTowards (offsetToFlockmatesCentre) * settings.cohesionWeight;
-            var seperationForce = SteerTowards (avgAvoidanceHeading) * settings.seperateWeight;
-
+            var alignmentForce = SteerTowards (avgFlockHeading/numPerceivedFlockmates) * settings.alignWeight;
             acceleration += alignmentForce;
-            acceleration += cohesionForce;
-            acceleration += seperationForce;
+
+            // var cohesionForce = SteerTowards (offsetToFlockmatesCentre) * settings.cohesionWeight;
+            // acceleration += cohesionForce;
+            //
+            // var seperationForce = SteerTowards (avgAvoidanceHeading) * settings.seperateWeight;
+            // acceleration += seperationForce;
         }
 
-        if (IsHeadingForCollision ()) {
-            Vector3 collisionAvoidDir = ObstacleRays ();
-            Vector3 collisionAvoidForce = SteerTowards (collisionAvoidDir) * settings.avoidCollisionWeight;
-            acceleration += collisionAvoidForce;
-        }
+        // if (IsHeadingForCollision ()) {
+        //     Vector3 collisionAvoidDir = ObstacleRays ();
+        //     Vector3 collisionAvoidForce = SteerTowards (collisionAvoidDir) * settings.avoidCollisionWeight;
+        //     acceleration += collisionAvoidForce;
+        // }
+        
+        Vector3 boidPosition = this.transform.position;
+        float width = 20f;
+        float height = 8f;
+        float buffer = 1.0f;
+        // This is the collision detection for the edges of the arena box
+        if (boidPosition.x < -width/2 + buffer) { // check -/+ of X-axis
+            this.gameObject.transform.position = new Vector3(width/2 - buffer, boidPosition.y, boidPosition.z);
+        }else if (boidPosition.x > width/2 - buffer) {
+            this.gameObject.transform.position = new Vector3(-width/2 + buffer, boidPosition.y, boidPosition.z);
+        } else if (boidPosition.y < 0 + buffer) { // check -/+ of Y-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, height - buffer, boidPosition.z);
+        } else if (boidPosition.y > height - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x,0 + buffer, boidPosition.z);
+        } else if (boidPosition.z < -width/2 + buffer) { // check -/+ of Z-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, width/2 - buffer);
+        }else if (boidPosition.z > width/2 - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, -width/2 + buffer);
+        } // if-else
 
         velocity += acceleration * Time.deltaTime;
         float speed = velocity.magnitude;
