@@ -14,14 +14,16 @@ using Random = UnityEngine.Random;
 public class Boid : MonoBehaviour {
     public Vector3 velocity; // velocity of the boid
     public Vector3 acceleration; // acceleration value of the boid 
-    private Vector3 forward; // direction the boid is facing
+    [HideInInspector]
+    public Vector3 forward; // direction the boid is facing
     private Transform boidTransfrom; // the transform of the boid
-    private Vector3 boidPosition; // the position of the boid
+    [HideInInspector]
+    public Vector3 boidPosition; // the position of the boid
 
 
     private float minSpeed = 9; // the speed of the boid
     private float maxSpeed = 10; // the speed of the boid
-    private float maxSteerForce = 2; // the Steer force of the boid of the boid
+    private float maxSteerForce = 4; // the Steer force of the boid of the boid
 
     public float alignWeight = 1;
     public float cohesionWeight = 1;
@@ -53,11 +55,21 @@ public class Boid : MonoBehaviour {
     /// </summary>
     /// <param name="boids">The array of boids to update</param>
     public void UpdateBoid(Boid[] boids) {
-        Vector3 alignRule = this.Align(boids);
+        
+        acceleration = Vector3.zero;
+        
+        Vector3 alignmentRule = this.Alignment(boids);
+        Vector3 cohestionRule = this.Cohesion(boids);
 
         if (neighborBoids > 0) {
-            Vector3 alignDir = SteerTowards(alignRule) * alignWeight;
-            acceleration += alignDir;
+            Vector3 alignmentDir = SteerTowards(alignmentRule) * alignWeight;
+            acceleration += alignmentDir;
+            
+            Vector3 centerOfFlockOffset = (cohestionRule - boidPosition);
+            
+            Vector3 cohesionDir = SteerTowards(centerOfFlockOffset) * cohesionWeight;
+            acceleration += cohesionDir;
+            
         }
 
         // set the current position
@@ -107,11 +119,11 @@ public class Boid : MonoBehaviour {
 
     
     /// <summary>
-    /// implements the align functionality of the boids
+    /// Checks the alignment rule for the boids.
     /// </summary>
     /// <param name="boids">The array of boids to check</param>
     /// <returns>The average directions of the neighboring Boids</returns>
-    Vector3 Align(Boid[] boids) {
+    Vector3 Alignment(Boid[] boids) {
         // reset the neighbor count
         neighborBoids = 0;
 
@@ -150,11 +162,64 @@ public class Boid : MonoBehaviour {
 
         // if there were neighbor boids, find the average of the direction vector
         if (neighborBoids > 0) {
-            avgDir = avgDir / neighborBoids;
+            avgDir /= neighborBoids;
         } // if
 
         return avgDir;
     } // align()
+    
+    /// <summary>
+    /// Checks the cohesion rule for the boids.
+    /// </summary>
+    /// <param name="boids">The array of boids to check.</param>
+    /// <returns>The average directions of the neighboring Boids.</returns>
+    Vector3 Cohesion(Boid[] boids) {
+        // reset the neighbor count
+        neighborBoids = 0;
+
+        // create a vector to be returned with the average direction of the neighboring boids 
+        Vector3 avgPos = Vector3.zero;
+
+        // check each boid against "this" boid
+        foreach (Boid b in boids) {
+            // check if b is "this"
+            if (b != this) {
+                // // Get the distance between boid b and "this"
+                // Vector3 offset = b.boidPosition - this.boidPosition;
+                // // get the radius distance. 
+                // float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                //
+                // // if the distnace is less than the perception radius 
+                // if (sqrDst < perceptionRadius * perceptionRadius) {
+                //     // increment the neighbor boid count
+                //     neighborBoids++;
+                //     // add the forward of b to the avg direction vector
+                //     avgDir += b.forward;
+                // }
+
+                // get the distance from boid b to "this" in a radius around "this"
+                float dist = Vector3.Distance(this.boidPosition, b.transform.position);
+
+                // if the distnace is less than the perception radius 
+                if (dist < perceptionRadius * perceptionRadius) {
+                    // add the position of b to the avg direction vector
+                    avgPos += b.boidPosition;
+                    // increment the neighbor boid count
+                    neighborBoids++;
+                } // if
+            } // if
+        } // foreach()
+
+        // if there were neighbor boids, find the average of the direction vector
+        if (neighborBoids > 0) {
+            avgPos /= neighborBoids;
+        } // if
+
+        return avgPos;
+    } // Cohesion()
+    
+    
+    
 
     // 
     /// <summary>

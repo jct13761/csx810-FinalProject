@@ -53,13 +53,15 @@ public class BoidManager : MonoBehaviour {
                         float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
 
                         if (sqrDst < viewRadius * viewRadius) {
-                            // boids[j].numPerceivedFlockmates += 1;
-                            boids[j].avgFlockHeading += boidB.forward;
-                            // boids[j].centreOfFlockmates += boidB.position;
+                            boids[j].numPerceivedFlockmates += 1;
+                            
+                            boids[j].avgFlockHeading += boidB.forward; // alignment
+                            
+                            boids[j].centreOfFlockmates += boidB.position; // cohesion
 
-                            if (sqrDst < avoidRadius * avoidRadius) {
-                                boids[j].avgAvoidanceHeading -= offset / sqrDst;
-                            }
+                            // if (sqrDst < avoidRadius * avoidRadius) {
+                            //     boids[j].avgAvoidanceHeading -= offset / sqrDst; // seperation
+                            // }
                         }
                     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoidManager : MonoBehaviour {
     
     public GameObject boidPrefab;
+    public GameObject alignmentArrow, cohesionSphere;
     private Boid[] boidArray;
     private int numOfBoids = 100;
     
@@ -23,10 +24,19 @@ public class BoidManager : MonoBehaviour {
     
     private void Update() {
 
+        Vector3 avgAlign = Vector3.zero;
+        Vector3 avgCohesionPos = Vector3.zero;
+        
+        
         foreach (Boid b in boidArray) {
             b.UpdateBoid(boidArray);
+            avgAlign += b.forward;
+            avgCohesionPos += b.boidPosition;
         }
-        
+
+        alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);
+        cohesionSphere.transform.position = avgCohesionPos/numOfBoids;
+
         // int numBoids = boids.Length;
         // float viewRadius = settings.perceptionRadius;
         // float avoidRadius = settings.avoidanceRadius;
@@ -51,6 +61,6 @@ public class BoidManager : MonoBehaviour {
         //
         //     }
         // }
-        
+
     }
 }
