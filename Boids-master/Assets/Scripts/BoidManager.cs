@@ -46,6 +46,8 @@ public class BoidManager : MonoBehaviour {
             float avoidRadius = settings.avoidanceRadius;
 
             for (int j = 0; j < numBoids; j++) {
+                
+                
                 for (int indexB = 0; indexB < numBoids; indexB++) {
                     if (j != indexB) {
                         Boid boidB = boids[indexB];
@@ -59,13 +61,14 @@ public class BoidManager : MonoBehaviour {
                             
                             boids[j].centreOfFlockmates += boidB.position; // cohesion
 
-                            // if (sqrDst < avoidRadius * avoidRadius) {
-                            //     boids[j].avgAvoidanceHeading -= offset / sqrDst; // seperation
-                            // }
+                            if (sqrDst < avoidRadius * avoidRadius) {
+                                boids[j].avgAvoidanceHeading -= offset / sqrDst; // seperation
+                            }
                         }
                     }
-
                 }
+                
+                
             }
 
             ////////////////////////////////////////

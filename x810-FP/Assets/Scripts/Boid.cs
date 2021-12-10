@@ -13,17 +13,21 @@ using Random = UnityEngine.Random;
  */
 public class Boid : MonoBehaviour {
     public Vector3 velocity; // velocity of the boid
-    public Vector3 acceleration; // acceleration value of the boid 
+    // public Vector3 acceleration; // acceleration value of the boid 
     [HideInInspector]
     public Vector3 forward; // direction the boid is facing
     private Transform boidTransfrom; // the transform of the boid
     [HideInInspector]
     public Vector3 boidPosition; // the position of the boid
 
+    private Vector3 centerOfFlockmates;
+    private Vector3 avgFlockHeading;
+    private Vector3 avgAvoidanceHeading;
 
-    private float minSpeed = 9; // the speed of the boid
-    private float maxSpeed = 10; // the speed of the boid
-    private float maxSteerForce = 4; // the Steer force of the boid of the boid
+
+    private float minSpeed = 19; // the speed of the boid
+    private float maxSpeed = 20; // the speed of the boid
+    private float maxSteerForce = 3; // the Steer force of the boid of the boid
 
     public float alignWeight = 1;
     public float cohesionWeight = 1;
@@ -32,7 +36,7 @@ public class Boid : MonoBehaviour {
     private float viewAngle = 180.0f;
     private float perceptionRadius = 2.5f;
     private float avoidanceRadius = 1;
-    private int neighborBoids = 0;
+    public int neighborBoids = 0;
 
     private float width = 50.0f, height = 30.0f; // the width/height of the arena box
     private float buffer = 1.0f; // a buffer to make the transition from top to bottom more smooth
@@ -44,7 +48,7 @@ public class Boid : MonoBehaviour {
     /// </summary>
     public void Init() {
         boidTransfrom = this.transform;
-        acceleration = Vector3.zero;
+        // acceleration = Vector3.zero;
         forward = Random.insideUnitSphere;
         velocity = forward * (minSpeed + maxSpeed) / 2;
     }
@@ -56,21 +60,47 @@ public class Boid : MonoBehaviour {
     /// <param name="boids">The array of boids to update</param>
     public void UpdateBoid(Boid[] boids) {
         
-        acceleration = Vector3.zero;
+        // set the current position
+        boidPosition = this.transform.position;
         
-        Vector3 alignmentRule = this.Alignment(boids);
-        Vector3 cohestionRule = this.Cohesion(boids);
+        Vector3 acceleration = Vector3.zero;
+        
+        // Vector3 alignmentRule = this.Alignment(boids);
+        // Vector3 cohestionRule = this.Cohesion(boids);
+        // Vector3 separationRule = this.Separation(boids);
+        
+        BoidRules(boids);
 
-        if (neighborBoids > 0) {
-            Vector3 alignmentDir = SteerTowards(alignmentRule) * alignWeight;
-            acceleration += alignmentDir;
+        if (neighborBoids != 0) {
+            // cohestionRule /= neighborBoids;
+            centerOfFlockmates /= neighborBoids;
+            Vector3 offsetToFlockmatesCentre = (centerOfFlockmates - boidPosition);
             
-            Vector3 centerOfFlockOffset = (cohestionRule - boidPosition);
             
-            Vector3 cohesionDir = SteerTowards(centerOfFlockOffset) * cohesionWeight;
-            acceleration += cohesionDir;
+            Vector3 alignmentForce = SteerTowards (avgFlockHeading) * alignWeight; // Alignment 
+            acceleration += alignmentForce;
             
-        }
+            Vector3 cohesionForce = SteerTowards (offsetToFlockmatesCentre) * cohesionWeight; // cohesion
+            acceleration += cohesionForce;
+            
+            Vector3 seperationForce = SteerTowards (avgAvoidanceHeading) * seperateWeight; // seperation
+            acceleration += seperationForce;
+            
+            
+            
+
+            // Vector3 alignmentDir = SteerTowards(alignmentRule) * alignWeight;
+            // acceleration += alignmentDir;
+
+            // Vector3 centerOfFlockOffset = (cohestionRule - boidPosition);
+            // Vector3 cohesionDir = SteerTowards(centerOfFlockOffset) * cohesionWeight;
+            // acceleration += cohesionDir;
+
+            // Vector3 separationDir = SteerTowards(separationRule) * seperateWeight;
+            // acceleration += separationDir;
+
+        } // if
+        
 
         // set the current position
         boidPosition = this.transform.position;
@@ -109,13 +139,45 @@ public class Boid : MonoBehaviour {
         // set the velocity to the direction and speed
         velocity = dir * s;
 
-        // update the position of the boid by moving it to by the velocity
-        transform.position += velocity * Time.deltaTime;
-        // set the new forward direction
+        // // update the position of the boid by moving it to by the velocity
+        // boidPosition += velocity * Time.deltaTime;
+        // // set the new forward direction
+        // forward = dir;
+        // this.transform.position = boidPosition;
+        // // rotate towards the new forward direction.
+        // transform.rotation = Quaternion.LookRotation(forward);
+        
+        boidTransfrom.position += velocity * Time.deltaTime;
+        boidTransfrom.forward = dir;
+        boidPosition = boidTransfrom.position;
         forward = dir;
-        // rotate towards the new forward direction.
-        transform.rotation = Quaternion.LookRotation(forward);
+        
     } // updateBoid()
+
+
+    void CheckForWallCollision() {
+        if (boidPosition.x < -width / 2 + buffer) {
+            // check -/+ of X-axis
+            this.gameObject.transform.position = new Vector3(width / 2 - buffer, boidPosition.y, boidPosition.z);
+        }
+        else if (boidPosition.x > width / 2 - buffer) {
+            this.gameObject.transform.position = new Vector3(-width / 2 + buffer, boidPosition.y, boidPosition.z);
+        }
+        else if (boidPosition.y < 0 + buffer) {
+            // check -/+ of Y-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, height - buffer, boidPosition.z);
+        }
+        else if (boidPosition.y > height - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x, 0 + buffer, boidPosition.z);
+        }
+        else if (boidPosition.z < -width / 2 + buffer) {
+            // check -/+ of Z-axis
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, width / 2 - buffer);
+        }
+        else if (boidPosition.z > width / 2 - buffer) {
+            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, -width / 2 + buffer);
+        } // if-else
+    } // CheckForWallCollision()
 
     
     /// <summary>
@@ -162,7 +224,7 @@ public class Boid : MonoBehaviour {
 
         // if there were neighbor boids, find the average of the direction vector
         if (neighborBoids > 0) {
-            avgDir /= neighborBoids;
+            // avgDir /= neighborBoids;
         } // if
 
         return avgDir;
@@ -174,6 +236,58 @@ public class Boid : MonoBehaviour {
     /// <param name="boids">The array of boids to check.</param>
     /// <returns>The average directions of the neighboring Boids.</returns>
     Vector3 Cohesion(Boid[] boids) {
+        // reset the neighbor count
+        neighborBoids = 0;
+
+        // create a vector to be returned with the average direction of the neighboring boids 
+        Vector3 avgPos = Vector3.zero;
+
+        // check each boid against "this" boid
+        foreach (Boid b in boids) {
+            // check if b is "this"
+            if (b != this) {
+                // Get the distance between boid b and "this"
+                Vector3 offset = b.boidPosition - this.boidPosition;
+                // get the radius distance. 
+                float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                
+                // if the distnace is less than the perception radius 
+                if (sqrDst < perceptionRadius * perceptionRadius) {
+                    // increment the neighbor boid count
+                    neighborBoids++;
+                    // add the forward of b to the avg direction vector
+                    avgPos += b.boidPosition;
+                }
+
+                // // get the distance from boid b to "this" in a radius around "this"
+                // float dist = Vector3.Distance(this.boidPosition, b.transform.position);
+                //
+                // // if the distnace is less than the perception radius 
+                // if (dist < perceptionRadius * perceptionRadius) {
+                //     // add the position of b to the avg direction vector
+                //     avgPos += b.boidPosition;
+                //     // increment the neighbor boid count
+                //     neighborBoids++;
+                // } // if
+            } // if
+        } // foreach()
+        
+        // if there were neighbor boids, find the average of the direction vector
+        if (neighborBoids > 0) {
+            // avgPos /= neighborBoids;
+            Debug.Log("Neighbor Count = " + neighborBoids);
+        } // if
+
+        return avgPos;
+    } // Cohesion()
+    
+    
+    /// <summary>
+    /// Checks the Separation rule for the boids.
+    /// </summary>
+    /// <param name="boids">The array of boids to check.</param>
+    /// <returns>The average directions of the neighboring Boids.</returns>
+    Vector3 Separation(Boid[] boids) {
         // reset the neighbor count
         neighborBoids = 0;
 
@@ -202,21 +316,70 @@ public class Boid : MonoBehaviour {
 
                 // if the distnace is less than the perception radius 
                 if (dist < perceptionRadius * perceptionRadius) {
-                    // add the position of b to the avg direction vector
-                    avgPos += b.boidPosition;
-                    // increment the neighbor boid count
-                    neighborBoids++;
+                    // get vector thats pointing away from local flock-mate b
+                    Vector3 difference = this.boidPosition - b.boidPosition;
+                    // if the distance is less than the avoidance radius
+                    if (dist < avoidanceRadius * avoidanceRadius) {
+                        // make the vector inversely proportional to the distance and add this new vector
+                        avgPos += difference / dist;
+                        // increment the neighbor Boid count
+                        neighborBoids++;
+                    } // if
                 } // if
             } // if
         } // foreach()
 
         // if there were neighbor boids, find the average of the direction vector
         if (neighborBoids > 0) {
-            avgPos /= neighborBoids;
+            // avgPos /= neighborBoids;
         } // if
 
         return avgPos;
-    } // Cohesion()
+    } // Seperation()
+    
+    
+    
+    /// <summary>
+    /// Does all 3 boid rules .
+    /// </summary>
+    /// <param name="boids">The array of boids to check.</param>
+    /// <returns>The average directions of the neighboring Boids.</returns>
+    void BoidRules(Boid[] boids) {
+        // reset the neighbor count
+        neighborBoids = 0;
+
+        // create a vector to be returned with the average direction of the neighboring boids 
+        Vector3 avgPos = Vector3.zero;
+
+        // check each boid against "this" boid
+        foreach (Boid b in boids) {
+            // check if b is "this"
+            if (b != this) {
+
+                Vector3 offset = this.boidPosition - b.boidPosition;
+
+                float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                
+
+                if (sqrDst < perceptionRadius * perceptionRadius) {
+
+                    neighborBoids++;
+
+                    avgFlockHeading += b.forward; // alignment
+                    
+                    centerOfFlockmates += b.boidPosition; // cohesion
+                    
+                    if (sqrDst < avoidanceRadius * avoidanceRadius) {
+                        avgAvoidanceHeading -= offset / sqrDst; // seperation
+                    }
+
+
+                }
+
+            } // if
+        } // foreach()
+
+    } // BoidRules()
     
     
     

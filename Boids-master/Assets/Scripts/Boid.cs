@@ -64,9 +64,9 @@ public class Boid : MonoBehaviour {
 
             Vector3 offsetToFlockmatesCentre = (centreOfFlockmates - position);
 
-            var alignmentForce = SteerTowards (avgFlockHeading) * settings.alignWeight; // Alignment 
-            acceleration += alignmentForce;
-
+            // var alignmentForce = SteerTowards (avgFlockHeading) * settings.alignWeight; // Alignment 
+            // acceleration += alignmentForce;
+            //
             var cohesionForce = SteerTowards (offsetToFlockmatesCentre) * settings.cohesionWeight; // cohesion
             acceleration += cohesionForce;
             
