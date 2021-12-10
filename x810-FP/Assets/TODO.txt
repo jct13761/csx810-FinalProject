@@ -1,6 +1,10 @@
 To-Do:
 Implement Boids
-Create Boid Playground
+- separation: steer to avoid crowding local flock-mates.
+- alignment: steer towards the average heading of local flock-mates.
+- cohesion: steer to move towards the average position (center of mass) of local flock-mates
+
+Create Boids Playground
 Add compute shader
 Add collision detection for boids
 Make bids have cool shape (Birds, Fish, etc.) / Make Random Color boids
