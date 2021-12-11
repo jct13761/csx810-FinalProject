@@ -2,6 +2,26 @@
 
 This is my final project for CSCI x810 - Computer Graphics for Fall 2021 at UGA with Dr. Hybinette. For this project, I implemented Boids, an animal flock simulation in Unity.  
 
+## Milestones
+#### Milestone 1
+* Project Setup
+* Custom Shaders
+* Simple Boid Logic (Movement, Rotation)
+* Wall Boundaries
+#### Milestone 2
+* Implement Boid Rules (Separation, Alignment, Cohesion)
+* Add collision detection for boids (Walls, Objects)
+* Create Boid Playground with many objects to navigate (cubes, Spheres, Torus, etc.)
+
+![./ReadmeResources/img_4.png](./ReadmeResources/img_4.png)
+#### Milestone 3
+* Add controls to change aspects of Boids.
+* Add compute shader (for telling which boids are near each other)
+#### Milestone 4
+* Implement a more animalistic flock formation (V-formation, torus, diamond, etc.)
+* * Add other formation options for the type of flock the boids will follow (fish, ants, locusts, etc.)
+
+
 ## TODO
 * Slides (PDF) - 1) Clickable link on google sheet, and 2) submitted on Odin in directory, 5-7 slides, Clickable link on google sheet -- Before Presentation, OK to make refinements and then submit refinements by `(Tu 12/14)`
 * Code/Software Demo-able - Refinements, cleaning up code, commenting can be submitted after demo `(Th 12/16)`
