@@ -9,13 +9,13 @@ public class BoidManager : MonoBehaviour {
     private Boid[] boidArray;
     private int numOfBoids = 100;
 
-    public float AlignmentWeight, CohesionWeight, SeperationWeight;
+    public float AlignmentWeight, CohesionWeight, SeparationWeight;
     
     // Start is called before the first frame update
     void Start() {
         AlignmentWeight = 1;
         CohesionWeight = 1;
-        SeperationWeight = 1;
+        SeparationWeight = 1;
         
         boidArray = new Boid[numOfBoids];
         for (int i = 0; i < boidArray.Length; i++) {
@@ -38,7 +38,7 @@ public class BoidManager : MonoBehaviour {
             b.UpdateBoid(boidArray);
             avgAlign += b.forward;
             avgCohesionPos += b.boidPosition;
-            b.SetWeights(AlignmentWeight, CohesionWeight, SeperationWeight);
+            b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight);
         }
 
         alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);
@@ -57,11 +57,11 @@ public class BoidManager : MonoBehaviour {
         //
         //             if (sqrDst < viewRadius * viewRadius) {
         //                 boids[j].numPerceivedFlockmates += 1;
-        //                 boids[j].avgFlockHeading += boidB.forward;
+        //                 boids[j].alignmentDirection += boidB.forward;
         //                 boids[j].centreOfFlockmates += boidB.position;
         //
         //                 if (sqrDst < avoidRadius * avoidRadius) {
-        //                     boids[j].avgAvoidanceHeading -= offset / sqrDst;
+        //                     boids[j].seperationDirection -= offset / sqrDst;
         //                 }
         //             }
         //         }
