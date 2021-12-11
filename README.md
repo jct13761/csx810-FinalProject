@@ -16,7 +16,9 @@ This is my final project for CSCI x810 - Computer Graphics for Fall 2021 at UGA 
 * Youtuber that introduced me to boids: https://www.youtube.com/watch?v=bqtqltqcQhw
 * Animalistic flocks: https://www.wired.com/2013/03/powers-of-swarms/
 * Formation techniques: https://cobweb.cs.uga.edu/~maria/papers/icra-2000.pdf
-* Boids implementation help: https://www.youtube.com/watch?v=mhjuuHl6qHM
+* Boids implementation help: 
+    * https://www.youtube.com/watch?v=mhjuuHl6qHM
+    * https://github.com/jqlee85/boids/blob/master/js/boid.js
 
 ## Attributes Used
 * 
