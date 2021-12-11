@@ -8,9 +8,15 @@ public class BoidManager : MonoBehaviour {
     public GameObject alignmentArrow, cohesionSphere;
     private Boid[] boidArray;
     private int numOfBoids = 100;
+
+    public float AlignmentWeight, CohesionWeight, SeperationWeight;
     
     // Start is called before the first frame update
     void Start() {
+        AlignmentWeight = 1;
+        CohesionWeight = 1;
+        SeperationWeight = 1;
+        
         boidArray = new Boid[numOfBoids];
         for (int i = 0; i < boidArray.Length; i++) {
             GameObject gameObject = Instantiate(boidPrefab, this.transform.position, this.transform.rotation);
@@ -32,6 +38,7 @@ public class BoidManager : MonoBehaviour {
             b.UpdateBoid(boidArray);
             avgAlign += b.forward;
             avgCohesionPos += b.boidPosition;
+            b.SetWeights(AlignmentWeight, CohesionWeight, SeperationWeight);
         }
 
         alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);

@@ -34,7 +34,7 @@ public class Boid : MonoBehaviour {
     public float seperateWeight = 1;
 
     private float viewAngle = 180.0f;
-    private float perceptionRadius = 2.5f;
+    private float perceptionRadius = 25f;
     private float avoidanceRadius = 1;
     public int neighborBoids = 0;
 
@@ -407,5 +407,12 @@ public class Boid : MonoBehaviour {
         // NewDir = IntendedDir - curDir
         Vector3 v = vector.normalized * maxSpeed - velocity;
         return Vector3.ClampMagnitude(v, maxSteerForce);
+    }
+
+
+    public void SetWeights(float a, float c, float s) {
+        alignWeight = a;
+        cohesionWeight = c;
+        seperateWeight = s;
     }
 }
