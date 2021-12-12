@@ -9,13 +9,14 @@ public class BoidManager : MonoBehaviour {
     private Boid[] boidArray;
     private int numOfBoids = 100;
 
-    public float AlignmentWeight, CohesionWeight, SeparationWeight;
+    public float AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight;
     
     // Start is called before the first frame update
     void Start() {
         AlignmentWeight = 1;
         CohesionWeight = 1;
         SeparationWeight = 1;
+        SteerWeight = 10;
         
         boidArray = new Boid[numOfBoids];
         for (int i = 0; i < boidArray.Length; i++) {
@@ -23,6 +24,15 @@ public class BoidManager : MonoBehaviour {
             Boid b = gameObject.GetComponent<Boid>();
             b.Init();
             // b.transform.position = new Vector3(0, 0, 0);
+            // Material m = b.GetComponentInChildren<Renderer>().material;
+            // Renderer[] M = b.GetComponentsInChildren<Renderer>();
+            // if (M != null) {
+            //     foreach (Renderer m in M) {
+            //         float r = Random.Range(0.0f, 1.0f), g = Random.Range(0.0f, 1.0f), B = Random.Range(0.0f, 1.0f);
+            //         m.material.color = new Color(#FFFFFF);
+            //     }
+            //     
+            // }
             boidArray[i] = b;
         } // for
     } // Start()
@@ -38,7 +48,7 @@ public class BoidManager : MonoBehaviour {
             b.UpdateBoid(boidArray);
             avgAlign += b.forward;
             avgCohesionPos += b.boidPosition;
-            b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight);
+            b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight);
         }
 
         alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);
