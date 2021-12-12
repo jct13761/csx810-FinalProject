@@ -20,3 +20,4 @@ MAYBE:
 - Make bids have cool shape (Birds, Fish, etc.) / Make Random Color boids
 - Add compute shader
 - Implement a more animalistic flock formation (V-formation, torus, diamond, etc.)
+ 
