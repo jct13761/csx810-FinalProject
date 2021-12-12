@@ -37,10 +37,10 @@ public class Boid : MonoBehaviour {
     private float width = 50.0f, height = 30.0f; // the width/height of the arena box
     private float buffer = -1.0f; // a buffer to make the transition from top to bottom more smooth
 
-    public LayerMask obstacleMask;
-    public float boundsRadius = .27f;
-    public float avoidCollisionWeight = 100;
-    public float collisionAvoidDst = 15;
+    /* Collision Detection Variables */
+    private float boundsRadius = 0.27f; // 0.27
+    private float avoidCollisionWeight = 100; // 100
+    private float collisionAvoidDst = 15; // 15
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +107,7 @@ public class Boid : MonoBehaviour {
         velocity = dir * s;
 
         /* Forces boids to ignore Y-axis and only move in 2D */
-        // velocity = new Vector3(velocity.x, 0, velocity.z);
+        velocity = new Vector3(velocity.x, 0, velocity.z);
 
         // set the new position based on the velocity and time
         boidTransfrom.position += velocity * Time.deltaTime;
