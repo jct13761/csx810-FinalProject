@@ -1,11 +1,22 @@
 To-Do:
 
 - FIX Collision Detection (too close to edges)  
+- Make different Color Boids
 - Add more rules: 
     - Leadership
     - Swarms (Racism)
-- Make different Color Boids
 - Create Boids Playground
+- Add Controls for boids:
+    - Alignment
+    - Cohesion
+    - Separation
+    - Different Shapes? 
+    - Racism
+    - Leadership
+    - 2D Mode
+    
+    
+MAYBE: 
 - Make bids have cool shape (Birds, Fish, etc.) / Make Random Color boids
-- Add Controls for boids 
 - Add compute shader
+- Implement a more animalistic flock formation (V-formation, torus, diamond, etc.)

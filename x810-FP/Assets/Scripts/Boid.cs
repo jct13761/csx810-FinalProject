@@ -38,9 +38,9 @@ public class Boid : MonoBehaviour {
     private float buffer = -1.0f; // a buffer to make the transition from top to bottom more smooth
 
     public LayerMask obstacleMask;
-    public float boundsRadius = .27f;
-    public float avoidCollisionWeight = 100;
-    public float collisionAvoidDst = 15;
+    public float boundsRadius = .27f; // 0.27
+    public float avoidCollisionWeight = 100; // 10
+    public float collisionAvoidDst = 15; // 15
     
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
