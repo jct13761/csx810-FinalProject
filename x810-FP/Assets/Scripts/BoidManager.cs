@@ -5,34 +5,52 @@ using UnityEngine;
 public class BoidManager : MonoBehaviour {
     
     public GameObject boidPrefab;
+    public Material[] BoidMaterials;
     public GameObject alignmentArrow, cohesionSphere;
     private Boid[] boidArray;
-    private int numOfBoids = 100;
+    private int numOfBoids = 1000;
 
-    public float AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight;
+    public float AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight, BoundsRadius, CollisionAvoidDst;
     
     // Start is called before the first frame update
     void Start() {
         AlignmentWeight = 1;
         CohesionWeight = 1;
         SeparationWeight = 1;
-        SteerWeight = 10;
+        SteerWeight = 50;
+        BoundsRadius = 0.27f;
+        CollisionAvoidDst = 15;
         
         boidArray = new Boid[numOfBoids];
         for (int i = 0; i < boidArray.Length; i++) {
             GameObject gameObject = Instantiate(boidPrefab, this.transform.position, this.transform.rotation);
             Boid b = gameObject.GetComponent<Boid>();
             b.Init();
-            // b.transform.position = new Vector3(0, 0, 0);
-            // Material m = b.GetComponentInChildren<Renderer>().material;
-            // Renderer[] M = b.GetComponentsInChildren<Renderer>();
-            // if (M != null) {
-            //     foreach (Renderer m in M) {
-            //         float r = Random.Range(0.0f, 1.0f), g = Random.Range(0.0f, 1.0f), B = Random.Range(0.0f, 1.0f);
-            //         m.material.color = new Color(#FFFFFF);
-            //     }
-            //     
-            // }
+            
+            Renderer[] renderers = b.GetComponentsInChildren<Renderer>();
+            if (renderers != null)
+                foreach (Renderer r in renderers) {
+                    float R = Random.Range(0.0f, 1.0f), G = Random.Range(0.0f, 1.0f), B = Random.Range(0.0f, 1.0f);
+                    // r.material.color = new Color(R, G, B);
+
+                    // if (i % 3 == 0) {
+                    //     r.material.color = new UnityEngine.Color(79, 9, 29); // Maroon
+                    // } else if (i % 3 == 1) {
+                    //     r.material.color = new UnityEngine.Color(20, 47, 67); // Midnight blue 
+                    // } else if (i % 3 == 2) {
+                    //     r.material.color = new UnityEngine.Color(255, 171, 76); // Gold
+                    // }
+
+                    int randMatPos = Random.Range(0, BoidMaterials.Length);
+                    r.material = BoidMaterials[randMatPos];
+                    
+                    b.SetRaceIndex(randMatPos);
+
+
+
+                    // r.material.color = Color.red;
+                }
+            
             boidArray[i] = b;
         } // for
     } // Start()
@@ -49,6 +67,8 @@ public class BoidManager : MonoBehaviour {
             avgAlign += b.forward;
             avgCohesionPos += b.boidPosition;
             b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight);
+            b.SetCollisionAvoidDistancet(CollisionAvoidDst);
+            b.SetBoundsRadius(BoundsRadius);
         }
 
         alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);

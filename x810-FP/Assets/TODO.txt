@@ -1,6 +1,5 @@
 To-Do:
 
-- FIX Collision Detection (too close to edges)  
 - Make different Color Boids
 - Add more rules: 
     - Leadership

@@ -12,9 +12,9 @@ using Random = UnityEngine.Random;
  */
 public class Boid : MonoBehaviour {
     
-    public Vector3 velocity; // velocity of the boid
+    private Vector3 _velocity; // velocity of the boid
     [HideInInspector] public Vector3 forward; // direction the boid is facing
-    private Transform boidTransfrom; // the transform of the boid
+    private Transform _boidTransfrom; // the transform of the boid
     [HideInInspector] public Vector3 boidPosition; // the position of the boid
 
     private Vector3 _alignmentDirection; // alignment
@@ -25,33 +25,35 @@ public class Boid : MonoBehaviour {
     private float maxSpeed = 20; // the speed of the boid
     private float maxSteerForce = 100; // the Steer force of the boid of the boid
 
-    public float alignWeight = 1;
-    public float cohesionWeight = 1;
-    public float seperateWeight = 1;
+    private float _alignWeight; // The weight for the alignment rule
+    private float _cohesionWeight; // The weight for the cohesion rule
+    private float _separateWeight; // The weight for the separate rule
 
-    private float viewAngle = 180.0f;
-    private float perceptionRadius = 2.5f;
-    private float avoidanceRadius = 1f;
-    public int neighborBoids = 0;
+    // private float _viewAngle = 180.0f; 
+    private float perceptionRadius = 2.5f; // The perception Radius for detecting neighbor boids 
+    private float avoidanceRadius = 1f; // The avoidance Radius for avoiding neighbor boids
+    private int _neighborBoids = 0; // the number of neighbor boids
 
     private float width = 50.0f, height = 30.0f; // the width/height of the arena box
     private float buffer = -1.0f; // a buffer to make the transition from top to bottom more smooth
 
-    public LayerMask obstacleMask;
-    public float boundsRadius = .27f; // 0.27
-    public float avoidCollisionWeight = 100; // 10
-    public float collisionAvoidDst = 15; // 15
+    // Collision Variables
+    private float _boundsRadius; // 0.27 default
+    private float _avoidCollisionWeight; // 10 default
+    private float _collisionAvoidDst; // 15 
     
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private int _raceIndex; // The Race of the Boid
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// <summary>
     /// Initialize the variables for the boid
     /// </summary>
     public void Init() {
-        boidTransfrom = this.transform;
-        // acceleration = Vector3.zero;
+        _boidTransfrom = this.transform;
         forward = Random.insideUnitSphere;
-        velocity = forward * (minSpeed + maxSpeed) / 2;
+        _velocity = forward * (minSpeed + maxSpeed) / 2;
     } // Init()
 
     /// <summary>
@@ -68,17 +70,17 @@ public class Boid : MonoBehaviour {
         BoidRules(boids);
 
         // if there is something to update
-        if (neighborBoids != 0) {
+        if (_neighborBoids != 0) {
             // calculate and apply the alignment force
-            Vector3 alignmentForce = SteerTowards(_alignmentDirection) * alignWeight; // Alignment 
+            Vector3 alignmentForce = SteerTowards(_alignmentDirection) * _alignWeight; // Alignment 
             acceleration += alignmentForce;
 
             // calculate and apply the cohesion force
-            Vector3 cohesionForce = SteerTowards(_cohesionDirection) * cohesionWeight; // cohesion
+            Vector3 cohesionForce = SteerTowards(_cohesionDirection) * _cohesionWeight; // cohesion
             acceleration += cohesionForce;
 
             // calculate and apply the separation force
-            Vector3 separationForce = SteerTowards(_separationDirection) * seperateWeight; // separation
+            Vector3 separationForce = SteerTowards(_separationDirection) * _separateWeight; // separation
             acceleration += separationForce;
         } // if
 
@@ -87,7 +89,7 @@ public class Boid : MonoBehaviour {
             // get the direction the boid should steer in to avoid collision.
             Vector3 collisionAvoidDir = ObstacleRays();
             // get the force using the steer towards function with the collision weight
-            Vector3 collisionAvoidForce = SteerTowards(collisionAvoidDir) * avoidCollisionWeight;
+            Vector3 collisionAvoidForce = SteerTowards(collisionAvoidDir) * _avoidCollisionWeight;
             // replace the current acceleration with the new steer force
             acceleration = collisionAvoidForce;
         } // if
@@ -97,24 +99,24 @@ public class Boid : MonoBehaviour {
 
         // Calculate the velocity of the boid
         // add the time as well as any acceleration to make it move
-        velocity += acceleration * Time.deltaTime;
+        _velocity += acceleration * Time.deltaTime;
         // get the magnitude 
-        float s = velocity.magnitude;
+        float s = _velocity.magnitude;
         // calculate the forward direction of the boid with the new velocity 
-        Vector3 dir = velocity / s;
+        Vector3 dir = _velocity / s;
         s = Mathf.Clamp(s, minSpeed, maxSpeed);
         // set the velocity to the direction and speed
-        velocity = dir * s;
+        _velocity = dir * s;
 
         /* Forces boids to ignore Y-axis and only move in 2D */
         // velocity = new Vector3(velocity.x, 0, velocity.z);
 
         // set the new position based on the velocity and time
-        boidTransfrom.position += velocity * Time.deltaTime;
+        _boidTransfrom.position += _velocity * Time.deltaTime;
         // set the new forward based on the above direction
-        boidTransfrom.forward = dir;
+        _boidTransfrom.forward = dir;
         // update the position variable
-        boidPosition = boidTransfrom.position;
+        boidPosition = _boidTransfrom.position;
         // update the forward variable
         forward = dir;
     } // updateBoid()
@@ -123,28 +125,21 @@ public class Boid : MonoBehaviour {
     /// Check for a collision with one of the walls and if there is, teleport the Boid to the opposite side.
     /// </summary>
     void CheckForWallCollision() {
-        if (boidPosition.x < -width / 2 + buffer) { // check -/+ of X-axis
-            this.gameObject.transform.position = new Vector3(width / 2 - buffer, boidPosition.y, boidPosition.z);
-        } else if (boidPosition.x > width / 2 - buffer) {
-            this.gameObject.transform.position = new Vector3(-width / 2 + buffer, boidPosition.y, boidPosition.z);
-        } else if (boidPosition.y < 0 + buffer) { // check -/+ of Y-axis
-            this.gameObject.transform.position = new Vector3(boidPosition.x, height - buffer, boidPosition.z);
-        } else if (boidPosition.y > height - buffer) {
-            this.gameObject.transform.position = new Vector3(boidPosition.x, 0 + buffer, boidPosition.z);
-        } else if (boidPosition.z < -width / 2 + buffer) { // check -/+ of Z-axis
-            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, width / 2 - buffer);
-        } else if (boidPosition.z > width / 2 - buffer) {
-            this.gameObject.transform.position = new Vector3(boidPosition.x, boidPosition.y, -width / 2 + buffer);
-        } // if-else
+        if (boidPosition.x < -width / 2 + buffer || boidPosition.x > width / 2 - buffer ||  // check -/+ of X-axis
+            boidPosition.y < 0 + buffer          || boidPosition.y > height - buffer ||     // check -/+ of Y-axis
+            boidPosition.z < -width / 2 + buffer || boidPosition.z > width / 2 - buffer)    // check -/+ of Z-axis
+            this.gameObject.transform.position = new Vector3(0, 10, 0);
     } // CheckForWallCollision()
 
     /// <summary>
     /// Checks for and applies Boid Alignment, Cohesion, and Separation.
+    /// Source: https://www.dawn-studio.de/tutorials/boids/
+    /// Source: https://www.youtube.com/watch?v=bqtqltqcQhw
     /// </summary>
     /// <param name="boids">The array of boids to check.</param>
     void BoidRules(Boid[] boids) {
         // reset the neighbor count
-        neighborBoids = 0;
+        _neighborBoids = 0;
         // create temp counters for the rules 
         int alignmentCohesionCount = 0, separationCount = 0;
 
@@ -168,7 +163,7 @@ public class Boid : MonoBehaviour {
                 Vector3 difference = bPos - thisPos;
 
                 // Alignment and Cohesion - if the distance is within the specified perception radius...
-                if (dist < perceptionRadius) {
+                if (dist < perceptionRadius && b.GetRaceIndex() == this._raceIndex) {
                     // add b's forward direction for the alignment var
                     alignmentDir += b.transform.forward;
                     // add the distance between b and self for the cohesion var
@@ -187,7 +182,7 @@ public class Boid : MonoBehaviour {
         } // foreach()
 
         // set the neighbor count to the larger of the 2 numbers 
-        neighborBoids = Mathf.Max(alignmentCohesionCount, separationCount);
+        _neighborBoids = Mathf.Max(alignmentCohesionCount, separationCount);
 
         // set the global var for alignment
         _alignmentDirection = alignmentDir;
@@ -226,7 +221,7 @@ public class Boid : MonoBehaviour {
          *      |/
          */
         // NewDir = IntendedDir - curDir
-        Vector3 v = vector.normalized * maxSpeed - velocity;
+        Vector3 v = vector.normalized * maxSpeed - _velocity;
         // clamps the value between the new one and the max Force 
         return Vector3.ClampMagnitude(v, maxSteerForce);
         // return v;
@@ -240,8 +235,8 @@ public class Boid : MonoBehaviour {
     /// <returns>a bool of whether or not a collision was detected</returns>
     bool IsHeadingForCollision() {
         RaycastHit hit;
-        if (Physics.SphereCast(this.boidPosition, this.boundsRadius, this.forward, out hit,
-            this.collisionAvoidDst, LayerMask.GetMask("BoidCollision")))
+        if (Physics.SphereCast(this.boidPosition, this._boundsRadius, this.forward, out hit,
+            this._collisionAvoidDst, LayerMask.GetMask("BoidCollision")))
             return true;
         return false;
     } // IsHeadingForCollision()
@@ -257,9 +252,9 @@ public class Boid : MonoBehaviour {
         Vector3[] rayDirections = BoidHelper.directions;
         // loop over the all the directions to check which one is a safe direction to take
         for (int i = 0; i < rayDirections.Length; i++) {
-            Vector3 dir = boidTransfrom.TransformDirection(rayDirections[i]);
+            Vector3 dir = _boidTransfrom.TransformDirection(rayDirections[i]);
             Ray ray = new Ray(boidPosition, dir);
-            if (!Physics.SphereCast(ray, boundsRadius, collisionAvoidDst,
+            if (!Physics.SphereCast(ray, _boundsRadius, _collisionAvoidDst,
                 LayerMask.GetMask("BoidCollision")))
                 return dir;
         } // for
@@ -275,10 +270,15 @@ public class Boid : MonoBehaviour {
         SetSteerWeight(t);
     } //SetWeights()
 
-    public void SetAlignmentWeight(float a) { alignWeight = a; }
-    public void SetCohesionWeight(float c) { cohesionWeight = c; }
-    public void SetSeparationWeight(float s) { seperateWeight = s; }
-    public void SetSteerWeight(float t) { avoidCollisionWeight = t; }
+    public void SetAlignmentWeight(float a) { _alignWeight = a; }
+    public void SetCohesionWeight(float c) { _cohesionWeight = c; }
+    public void SetSeparationWeight(float s) { _separateWeight = s; }
+    public void SetSteerWeight(float t) { _avoidCollisionWeight = t; }
+    public void SetBoundsRadius(float r) { _boundsRadius = r; }
+    public void SetCollisionAvoidDistancet(float c) { _collisionAvoidDst = c; }
+    public int GetRaceIndex() { return _raceIndex; }
+    public void SetRaceIndex(int i) { _raceIndex = i; }
+    
 } // Boid Class
 
 
