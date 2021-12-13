@@ -15,13 +15,13 @@ This is my final project for CSCI x810 - Computer Graphics for Fall 2021 at UGA 
 * ✅Create Boid Playground with many objects to navigate (cubes, Spheres, Torus, etc.)
 
 ![./ReadmeResources/img_4.png](./ReadmeResources/img_4.png)
-#### 〰 Milestone 3
+#### ✅ Milestone 3
 * ✅Add controls to change aspects of Boids.
 * ✅Add additional Rules (Leadership, Swarms/Racism, etc.) 
 * ✅Use a better Model for the boids 
-* ❌Add compute shader (for telling which boids are near each other)
 
 #### ❌ Milestone 4
+* ❌Add compute shader (for telling which boids are near each other)
 * ❌Implement a more animalistic flock formation (V-formation, torus, diamond, etc.)
 * ❌Add other formation options for the type of flock the boids will follow (fish, ants, locusts, etc.)
 
