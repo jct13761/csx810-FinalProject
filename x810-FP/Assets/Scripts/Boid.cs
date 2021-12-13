@@ -20,6 +20,7 @@ public class Boid : MonoBehaviour {
     private Vector3 _alignmentDirection; // alignment
     private Vector3 _cohesionDirection; // cohesion 
     private Vector3 _separationDirection; // separation
+    private Vector3 _leaderDirection; // Leadership
     
     private float minSpeed = 19; // the speed of the boid
     private float maxSpeed = 20; // the speed of the boid
@@ -28,6 +29,7 @@ public class Boid : MonoBehaviour {
     private float _alignWeight; // The weight for the alignment rule
     private float _cohesionWeight; // The weight for the cohesion rule
     private float _separateWeight; // The weight for the separate rule
+    private float _leaderWeight; // The weight for the leadership rule
 
     private float perceptionRadius = 2.5f; // The perception Radius for detecting neighbor boids 
     private float avoidanceRadius = 1f; // The avoidance Radius for avoiding neighbor boids
@@ -42,7 +44,7 @@ public class Boid : MonoBehaviour {
     private float _collisionAvoidDst; // 15 
     
     private int _raceIndex; // The Race of the Boid
-    private bool _isRacismActive;
+    private bool _isBiasActive;
     private Renderer[] _renderers;
 
     private bool _2DMode = false;
@@ -84,6 +86,10 @@ public class Boid : MonoBehaviour {
             // calculate and apply the separation force
             Vector3 separationForce = SteerTowards(_separationDirection) * _separateWeight; // separation
             acceleration += separationForce;
+            
+            // calculate and apply the leadership force
+            Vector3 leadershipForce = SteerTowards(_leaderDirection) * _leaderWeight; // leadership
+            acceleration += leadershipForce;
         } // if
 
         // Check if the Boid is going to colide
@@ -150,6 +156,10 @@ public class Boid : MonoBehaviour {
         Vector3 alignmentDir = Vector3.zero;
         Vector3 cohesionDir = Vector3.zero;
         Vector3 separationDir = Vector3.zero;
+        
+        // Leadership variables
+        float leaderAngle = 0f;
+        Boid leaderBoid = null;
 
         // temp vars for the position of b and self
         Vector3 thisPos = this.transform.position;
@@ -166,15 +176,21 @@ public class Boid : MonoBehaviour {
                 Vector3 difference = bPos - thisPos;
                 
                 
-                // Alignment and Cohesion - if the distance is within the specified perception radius, and if Racism is
+                // Alignment and Cohesion - if the distance is within the specified perception radius, and if Bias is
                 // active and b is not the same race as self... 
-                if (dist < perceptionRadius && !(_isRacismActive && b.GetRaceIndex() != this._raceIndex)) {
+                if (dist < perceptionRadius && !(_isBiasActive && b.GetRaceIndex() != this._raceIndex)) {
                     // add b's forward direction for the alignment var
                     alignmentDir += b.transform.forward;
                     // add the distance between b and self for the cohesion var
                     cohesionDir += difference;
                     // increment the counter
                     alignmentCohesionCount++;
+                    
+                    float angle = Vector3.Angle(bPos - thisPos, this.forward);
+                    if (angle < leaderAngle && angle < 90f) {
+                        leaderBoid = b;
+                        leaderAngle = angle;
+                    }
                 } // if
 
                 // Separation - if the if the distance is within the specified avoidance radius...
@@ -195,6 +211,10 @@ public class Boid : MonoBehaviour {
         cohesionDir -= this.transform.position;
         // set the global var for cohesion
         _cohesionDirection = cohesionDir;
+        
+        // apply the leadership direction
+        if (leaderBoid != null)
+            _leaderDirection = (leaderBoid.transform.position - thisPos).normalized * 0.5f;
 
         // if the Separation is not 0, calculate the average separation value
         if (separationCount > 0) separationDir /= separationCount;
@@ -283,23 +303,24 @@ public class Boid : MonoBehaviour {
     
     
     /**************************************** Gettters/Setters *****************************************/
-    public void SetAllWeights(float a, float c, float s, float t) {
+    public void SetAllWeights(float a, float c, float s, float l, float t) {
         SetAlignmentWeight(a);
         SetCohesionWeight(c);
         SetSeparationWeight(s);
+        SetLeaderWeight(l);
         SetSteerWeight(t);
     } //SetWeights()
 
     public void SetAlignmentWeight(float a) { _alignWeight = a; }
     public void SetCohesionWeight(float c) { _cohesionWeight = c; }
     public void SetSeparationWeight(float s) { _separateWeight = s; }
+    public void SetLeaderWeight(float s) { _leaderWeight = s; }
     public void SetSteerWeight(float t) { _avoidCollisionWeight = t; }
     public void SetBoundsRadius(float r) { _boundsRadius = r; }
     public void SetCollisionAvoidDistancet(float c) { _collisionAvoidDst = c; }
     public int GetRaceIndex() { return _raceIndex; }
-    public void SetRacismActive(bool r) { _isRacismActive = r; }
-    public bool GetRacismActive() { return _isRacismActive; }
     public void SetRaceIndex(int i) { _raceIndex = i; }
+    public void SetBaisActive(bool r) { _isBiasActive = r; }
     public void SetRenderers(Renderer[] r) { _renderers = r; }
     public Renderer[] GetRenderers() { return _renderers; }
 

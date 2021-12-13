@@ -19,7 +19,10 @@ public class BoidManager : MonoBehaviour {
     [Range(0.0f, 100.0f)]
     public float SeparationWeight; // The separation weight for the boids rules 
     [Range(0.0f, 100.0f)]
+    public float LeaderWeight; // The steer weight for the boids rules 
+    [Range(0.0f, 100.0f)]
     public float SteerWeight; // The steer weight for the boids rules 
+    
     
     private Boid[] boidArray; // The cached array of spawned boids
     private float CollisionAvoidDst; // the collision avoidance distance for collision avoidance
@@ -30,12 +33,12 @@ public class BoidManager : MonoBehaviour {
     private bool _cacheShowDebugTools; // The cached bool to show the debug tools 
     private MeshRenderer[] debugObjs; // The number of child debug objects on the spawner object 
     
-    // For Racism
+    // For Diversity/Bias/Racism
     [Range(1, 10)]
-    public int NumOfRaces; // the user specified number of races to have 
-    private int maxRaces; // how much of array will be used 
-    private int _cacheNumOfRaces; // the user specified number of races to have 
-    public bool RacismActive; // the public bool for is racism is active
+    public int Diversity; // the user specified number of races to have 
+    private int maxDiversity; // how much of array will be used 
+    private int _cacheDiversity; // the user specified number of races to have 
+    public bool BiasActive; // the public bool for is racism is active
     
     // For 2D mode
     public bool Set2DMode; // the bool to set 2D mode or not
@@ -52,6 +55,7 @@ public class BoidManager : MonoBehaviour {
         AlignmentWeight = 1;
         CohesionWeight = 1;
         SeparationWeight = 1;
+        LeaderWeight = 0;
         SteerWeight = 50;
         BoundsRadius = 0.27f;
         CollisionAvoidDst = 15;
@@ -66,10 +70,10 @@ public class BoidManager : MonoBehaviour {
         debugObjs = this.GetComponentsInChildren<MeshRenderer>();
         SetDebugToolVisibilty();
         
-        // Racism setup
-        NumOfRaces = 1; // set the default number of Races
-        maxRaces = Mathf.Min(NumOfRaces, BoidMaterials.Length); // smallest of the 2 numbers will be max
-        RacismActive = true;
+        // Diversity/Bias/Racism setup
+        Diversity = 1; // set the default number of Races
+        maxDiversity = Mathf.Min(Diversity, BoidMaterials.Length); // smallest of the 2 numbers will be max
+        BiasActive = true;
         
         // 2D Mode setup
         Set2DMode = false;
@@ -94,10 +98,10 @@ public class BoidManager : MonoBehaviour {
                 avgAlign += b.forward;
                 avgCohesionPos += b.boidPosition;
             } // if
-            b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight);
+            b.SetAllWeights(AlignmentWeight, CohesionWeight, SeparationWeight, LeaderWeight, SteerWeight);
             b.SetCollisionAvoidDistancet(CollisionAvoidDst);
             b.SetBoundsRadius(BoundsRadius);
-            b.SetRacismActive(RacismActive);
+            b.SetBaisActive(BiasActive);
         } // foreach
 
         // If the debug controls are showing, update their position and rotation
@@ -115,7 +119,7 @@ public class BoidManager : MonoBehaviour {
             SetDebugToolVisibilty();
         
         // if the race number has been updated.
-        if (NumOfRaces != _cacheNumOfRaces && NumOfRaces > 0 && NumOfRaces <= BoidMaterials.Length) 
+        if (Diversity != _cacheDiversity && Diversity > 0 && Diversity <= BoidMaterials.Length) 
             SetNewNumOfRaces();
 
         // check if the 2D mode variable was updated 
@@ -137,7 +141,7 @@ public class BoidManager : MonoBehaviour {
             GameObject gameObject = Instantiate(boidPrefabs[BoidShape], this.transform.position, this.transform.rotation);
             Boid b = gameObject.GetComponent<Boid>();
             b.Init();
-            b.SetRacismActive(RacismActive);
+            b.SetBaisActive(BiasActive);
             Renderer[] renderers = b.GetComponentsInChildren<Renderer>();
             b.SetRenderers(renderers);
             if (renderers != null) SetRandomMaterial(renderers, b);
@@ -169,8 +173,8 @@ public class BoidManager : MonoBehaviour {
     /// Helper function that sets all the boids to a new Race 
     /// </summary>
     private void SetNewNumOfRaces() {
-        _cacheNumOfRaces = NumOfRaces;
-        maxRaces = Mathf.Min(NumOfRaces, BoidMaterials.Length); // smallest of the 2 numbers will be max
+        _cacheDiversity = Diversity;
+        maxDiversity = Mathf.Min(Diversity, BoidMaterials.Length); // smallest of the 2 numbers will be max
         Renderer[] boidRenderer;
         foreach (Boid b in boidArray) {
                 boidRenderer = b.GetRenderers();
@@ -184,7 +188,7 @@ public class BoidManager : MonoBehaviour {
     /// <param name="renderers">The Renderers of the boid to update</param>
     /// <param name="b">The boid to change</param>
     private void SetRandomMaterial(Renderer[] renderers, Boid b) {
-        int randMatPos = Random.Range(0, NumOfRaces); // Generate a random number for the Race
+        int randMatPos = Random.Range(0, Diversity); // Generate a random number for the Race
         b.SetRaceIndex(randMatPos); // Set the race index in the boid
         // loop over all the child renderers and update them
         foreach (Renderer r in renderers)
