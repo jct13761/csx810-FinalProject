@@ -2,6 +2,9 @@
 
 This is my final project for CSCI x810 - Computer Graphics for Fall 2021 at UGA with Dr. Hybinette. For this project, I implemented Boids, an animal flock simulation in Unity.  
 
+![./ReadmeResources/AppScreenShot_1Color.png](./ReadmeResources/AppScreenShot_1Color.png)
+![./ReadmeResources/AppScreenShot_2Color.png](./ReadmeResources/AppScreenShot_2Color.png)
+
 ## Milestones
 #### ✅ Milestone 1 
 * ✅Project Setup
