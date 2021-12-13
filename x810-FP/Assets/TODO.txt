@@ -1,4 +1,5 @@
 To-Do:
+- Take Better Screenshots
 - Add GUI Controls 
     - Boid Shape
     - Num of Boids
