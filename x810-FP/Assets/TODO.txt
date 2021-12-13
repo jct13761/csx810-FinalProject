@@ -3,7 +3,6 @@ To-Do:
 - Add more rules: 
     - Leadership
 
-- Create Boids Playground
 
 - Add Controls for boids:
     - Alignment
