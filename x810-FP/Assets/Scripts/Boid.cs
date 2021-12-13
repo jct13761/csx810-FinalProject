@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
  * https://www.youtube.com/watch?v=bqtqltqcQhw
  * https://www.youtube.com/watch?v=mhjuuHl6qHM
  * https://www.cs.toronto.edu/~dt/siggraph97-course/cwr87/
+ * https://jumpoff.io/portfolio/boids
  */
 public class Boid : MonoBehaviour {
     
