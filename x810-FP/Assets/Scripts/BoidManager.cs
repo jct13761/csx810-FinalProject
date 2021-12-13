@@ -4,42 +4,42 @@ using UnityEngine;
 
 public class BoidManager : MonoBehaviour {
     
-    public GameObject alignmentArrow, cohesionSphere;
-    public GameObject[] boidPrefabs;
-    public Material[] BoidMaterials;
+    public GameObject alignmentArrow, cohesionSphere; // the debug prefabs 
+    public GameObject[] boidPrefabs; // the array of boid prefabs
+    public Material[] BoidMaterials; // The array of Boid materials
     [Range(0, 3)]
-    public int BoidShape;
-    public int NumOfBoids;
-    private int _cacheBoidShape;
+    public int BoidShape; // The shape of the boid, Set in the editor
+    private int _cacheBoidShape;// the cached index of the shape of the boids
+    public int NumOfBoids; // The number of boids 
+    private int _numOfBoids = 200; // the default number of boids 
     [Range(0.0f, 100.0f)]
-    public float AlignmentWeight;
+    public float AlignmentWeight; // The alignment weight for the boids rules 
     [Range(0.0f, 100.0f)]
-    public float CohesionWeight;
+    public float CohesionWeight; // The cohesion weight for the boids rules 
     [Range(0.0f, 100.0f)]
-    public float SeparationWeight;
+    public float SeparationWeight; // The separation weight for the boids rules 
     [Range(0.0f, 100.0f)]
-    public float SteerWeight;
+    public float SteerWeight; // The steer weight for the boids rules 
     
-    private Boid[] boidArray;
-    private int _numOfBoids = 200;
-    private float CollisionAvoidDst;
-    private float BoundsRadius;
+    private Boid[] boidArray; // The cached array of spawned boids
+    private float CollisionAvoidDst; // the collision avoidance distance for collision avoidance
+    private float BoundsRadius; // the bounds radius for collision avoidance
 
     // Show Debug Objects 
-    public bool ShowDebugTools;
-    private bool _cacheShowDebugTools;
-    private MeshRenderer[] debugObjs;
+    public bool ShowDebugTools; // The bool to show the debug tools 
+    private bool _cacheShowDebugTools; // The cached bool to show the debug tools 
+    private MeshRenderer[] debugObjs; // The number of child debug objects on the spawner object 
     
     // For Racism
     [Range(1, 10)]
     public int NumOfRaces; // the user specified number of races to have 
     private int maxRaces; // how much of array will be used 
     private int _cacheNumOfRaces; // the user specified number of races to have 
-    public bool RacismActive;
+    public bool RacismActive; // the public bool for is racism is active
     
     // For 2D mode
-    public bool Set2DMode;
-    private bool _cacheSet2DMode;
+    public bool Set2DMode; // the bool to set 2D mode or not
+    private bool _cacheSet2DMode; // the cached bool to set 2D mode or not
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -75,13 +75,12 @@ public class BoidManager : MonoBehaviour {
         Set2DMode = false;
         _cacheSet2DMode = Set2DMode;
         
-        CreateBoid();
-        
-        
+        // Create and spawn the boids 
+        CreateBoid(); 
     } // Start()
     
     /// <summary>
-    /// The update function. This will 
+    /// The update function. This will update the position of the boids as well as check for and update the user controls.
     /// </summary>
     private void Update() {
 
@@ -107,6 +106,7 @@ public class BoidManager : MonoBehaviour {
             if (cohesionSphere != null) cohesionSphere.transform.position = avgCohesionPos/_numOfBoids;
         } // if
 
+        // check if the boid shape variable was updated 
         if (BoidShape != _cacheBoidShape)
             setBoidShape();
         
@@ -118,12 +118,16 @@ public class BoidManager : MonoBehaviour {
         if (NumOfRaces != _cacheNumOfRaces && NumOfRaces > 0 && NumOfRaces <= BoidMaterials.Length) 
             SetNewNumOfRaces();
 
+        // check if the 2D mode variable was updated 
         if (Set2DMode != _cacheSet2DMode)
             SetBoid2DMode();
 
 
     } // Update()
 
+    /// <summary>
+    /// Creates the boids and spawns them
+    /// </summary>
     private void CreateBoid() {
         // initialize the new boid array
         boidArray = new Boid[_numOfBoids];
@@ -139,17 +143,17 @@ public class BoidManager : MonoBehaviour {
             if (renderers != null) SetRandomMaterial(renderers, b);
             boidArray[i] = b;
         } // for
-        
     } // CreateBoid()
     
-    
+    /// <summary>
+    /// Set the Boids Shape by destroying all of them and Respawning them
+    /// </summary>
     private void setBoidShape() {
         _cacheBoidShape = BoidShape;
         _numOfBoids = NumOfBoids;
         foreach (Boid b in boidArray) b.DestroyGameObject();
         CreateBoid();
     } // setBoidShape()
-    
 
     /// <summary>
     /// Helper function that will set if the debug tools are visible or not.
@@ -187,6 +191,9 @@ public class BoidManager : MonoBehaviour {
             r.material = BoidMaterials[randMatPos];
     } // setRandomMaterial()
 
+    /// <summary>
+    /// Set the 2D mode bool for each boid
+    /// </summary>
     private void SetBoid2DMode() {
         _cacheSet2DMode = Set2DMode;
         foreach (Boid b in boidArray) 
