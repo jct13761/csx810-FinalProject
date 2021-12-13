@@ -1,4 +1,15 @@
 To-Do:
 - Add GUI Controls 
-- Add compute shader
+    - Boid Shape
+    - Num of Boids
+    - Alignment
+    - Cohesion
+    - Separation
+    - Leadership
+    - Steer Weight
+    - Show Debug Tools Toggle
+    - Diversity 
+    - Bias Toggle
+    - 2D Mode Toggle
+- Convert BoidRules() into compute shader
 - Implement a more animalistic flock formation (V-formation, torus, diamond, etc.)
