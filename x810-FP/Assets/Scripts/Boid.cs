@@ -42,7 +42,10 @@ public class Boid : MonoBehaviour {
     private float _collisionAvoidDst; // 15 
     
     private int _raceIndex; // The Race of the Boid
-    
+    private bool _isRacismActive;
+    private Renderer[] _renderers;
+
+    private bool _2DMode = false;
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,8 +110,9 @@ public class Boid : MonoBehaviour {
         // set the velocity to the direction and speed
         _velocity = dir * s;
 
-        /* Forces boids to ignore Y-axis and only move in 2D */
-        // velocity = new Vector3(velocity.x, 0, velocity.z);
+        // if the mode is 2D, then set the y-velocity to 0 so it only moves on 2 axis
+        if (_2DMode)
+            _velocity = new Vector3(_velocity.x, 0, _velocity.z);
 
         // set the new position based on the velocity and time
         _boidTransfrom.position += _velocity * Time.deltaTime;
@@ -160,9 +164,11 @@ public class Boid : MonoBehaviour {
                 float dist = Vector3.Distance(bPos, thisPos);
                 // calculate the distance between the self and b as a Vector3
                 Vector3 difference = bPos - thisPos;
-
-                // Alignment and Cohesion - if the distance is within the specified perception radius...
-                if (dist < perceptionRadius && b.GetRaceIndex() == this._raceIndex) {
+                
+                
+                // Alignment and Cohesion - if the distance is within the specified perception radius, and if Racism is
+                // active and b is not the same race as self... 
+                if (dist < perceptionRadius && !(_isRacismActive && b.GetRaceIndex() != this._raceIndex)) {
                     // add b's forward direction for the alignment var
                     alignmentDir += b.transform.forward;
                     // add the distance between b and self for the cohesion var
@@ -260,7 +266,22 @@ public class Boid : MonoBehaviour {
         return forward;
     } // ObstacleRays()
 
+    /// <summary>
+    /// Sets the Boids to only move in X and Z axis
+    /// </summary>
+    /// <param name="d">bool to set the mode</param>
+    public void Set2DMode(bool d) {
+        _2DMode = d;
+        if (d) this.gameObject.transform.position = new Vector3(boidPosition.x, 40, boidPosition.z);
+    } // Set2DMode()
 
+    /// <summary>
+    /// Destroys itself
+    /// </summary>
+    public void DestroyGameObject() { Destroy(this.gameObject); }
+    
+    
+    
     /**************************************** Gettters/Setters *****************************************/
     public void SetAllWeights(float a, float c, float s, float t) {
         SetAlignmentWeight(a);
@@ -276,8 +297,12 @@ public class Boid : MonoBehaviour {
     public void SetBoundsRadius(float r) { _boundsRadius = r; }
     public void SetCollisionAvoidDistancet(float c) { _collisionAvoidDst = c; }
     public int GetRaceIndex() { return _raceIndex; }
+    public void SetRacismActive(bool r) { _isRacismActive = r; }
+    public bool GetRacismActive() { return _isRacismActive; }
     public void SetRaceIndex(int i) { _raceIndex = i; }
-    
+    public void SetRenderers(Renderer[] r) { _renderers = r; }
+    public Renderer[] GetRenderers() { return _renderers; }
+
 } // Boid Class
 
 

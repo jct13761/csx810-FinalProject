@@ -102,9 +102,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1210758490465411184}
+  - component: {fileID: 1210758490465411187}
   - component: {fileID: 1210758490465411185}
   - component: {fileID: 1210758490465411186}
-  - component: {fileID: 1210758490465411187}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -128,6 +128,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1210758490465411187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210758490465411188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c398c8ad8b935bc45968cf046549d9ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boidPrefab: {fileID: 2225164033285808290, guid: 40a59d16e6a9cae47aa8b07d8ecae1c4,
+    type: 3}
+  BoidMaterials:
+  - {fileID: 2100000, guid: d6e13408597783e4993ccdb3b1768bba, type: 2}
+  - {fileID: 2100000, guid: 195be1b5da9764045be90868552004ae, type: 2}
+  - {fileID: 2100000, guid: b711de87d73a49f4684e0b561bb7da7a, type: 2}
+  - {fileID: 2100000, guid: 51448b3f9ae178648b6cba959b96824d, type: 2}
+  - {fileID: 2100000, guid: 7621c5bb89c5e87418169c494c97ea03, type: 2}
+  - {fileID: 2100000, guid: d51f315fd6f1d234aa1ba3d62164a300, type: 2}
+  alignmentArrow: {fileID: 5627859350854347227}
+  cohesionSphere: {fileID: 1210758490317201708}
+  AlignmentWeight: 0
+  CohesionWeight: 0
+  SeparationWeight: 0
+  SteerWeight: 0
+  ShowDebugTools: 0
+  NumOfRaces: 0
+  RacismActive: 0
 --- !u!33 &1210758490465411185
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -175,35 +205,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1210758490465411187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1210758490465411188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c398c8ad8b935bc45968cf046549d9ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boidPrefab: {fileID: 2225164033285808290, guid: 40a59d16e6a9cae47aa8b07d8ecae1c4,
-    type: 3}
-  BoidMaterials:
-  - {fileID: 2100000, guid: d6e13408597783e4993ccdb3b1768bba, type: 2}
-  - {fileID: 2100000, guid: 195be1b5da9764045be90868552004ae, type: 2}
-  - {fileID: 2100000, guid: b711de87d73a49f4684e0b561bb7da7a, type: 2}
-  - {fileID: 2100000, guid: 51448b3f9ae178648b6cba959b96824d, type: 2}
-  - {fileID: 2100000, guid: 7621c5bb89c5e87418169c494c97ea03, type: 2}
-  - {fileID: 2100000, guid: d51f315fd6f1d234aa1ba3d62164a300, type: 2}
-  alignmentArrow: {fileID: 5627859350854347227}
-  cohesionSphere: {fileID: 1210758490317201708}
-  AlignmentWeight: 0
-  CohesionWeight: 0
-  SeparationWeight: 0
-  SteerWeight: 0
-  BoundsRadius: 0
-  CollisionAvoidDst: 0
 --- !u!1001 &1210758490045933684
 PrefabInstance:
   m_ObjectHideFlags: 0

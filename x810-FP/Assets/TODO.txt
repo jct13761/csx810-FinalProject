@@ -1,17 +1,13 @@
 To-Do:
 
-- Add more rules: 
-    - Leadership
-
-
 - Add Controls for boids:
-    - Alignment
-    - Cohesion
-    - Separation
-    - Different Shapes? 
-    - Racism
-    - Leadership
     - 2D Mode
+    - Leadership??
+
+- Add more rules: 
+    - Leadership??
+
+
 
 MAYBE: 
 - Make bids have cool shape (Birds, Fish, etc.) / Make Random Color boids
