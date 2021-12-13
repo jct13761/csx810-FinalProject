@@ -46,13 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2555cd63bc7fce84db1e16fdf1ce2ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
   forward: {x: 0, y: 0, z: 0}
   boidPosition: {x: 0, y: 0, z: 0}
-  alignWeight: 1
-  cohesionWeight: 1
-  seperateWeight: 1
-  neighborBoids: 0
 --- !u!1 &3928578128633791227
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,7 +107,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7621c5bb89c5e87418169c494c97ea03, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

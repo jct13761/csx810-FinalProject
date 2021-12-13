@@ -1,111 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class BoidManager : MonoBehaviour {
-
-    const int threadGroupSize = 1024;
-
-    public BoidSettings settings;
-    public ComputeShader compute;
-    Boid[] boids;
-
-    void Start () {
-        boids = FindObjectsOfType<Boid> ();
-        foreach (Boid b in boids) {
-            b.Initialize (settings, null);
-        }
-
-    }
-
-    void Update () {
-        if (boids != null) {
-
-            // var boidData = new BoidData[numBoids];
-
-            // for (int i = 0; i < boids.Length; i++) {
-            //     boidData[i].position = boids[i].position;
-            //     boidData[i].direction = boids[i].forward;
-            // }
-
-            // var boidBuffer = new ComputeBuffer (numBoids, BoidData.Size);
-            // boidBuffer.SetData (boidData);
-            //
-            // compute.SetBuffer (0, "boids", boidBuffer);
-            // compute.SetInt ("numBoids", boids.Length);
-            // compute.SetFloat ("viewRadius", settings.perceptionRadius);
-            // compute.SetFloat ("avoidRadius", settings.avoidanceRadius);
-            //
-            // int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);
-            // compute.Dispatch (0, threadGroups, 1, 1);
-            //
-            // boidBuffer.GetData (boidData);
-            
-            int numBoids = boids.Length;
-            float viewRadius = settings.perceptionRadius;
-            float avoidRadius = settings.avoidanceRadius;
-
-            for (int j = 0; j < numBoids; j++) {
-                
-                
-                for (int indexB = 0; indexB < numBoids; indexB++) {
-                    if (j != indexB) {
-                        Boid boidB = boids[indexB];
-                        Vector3 offset = boidB.position - boids[j].position;
-                        float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-
-                        if (sqrDst < viewRadius * viewRadius) {
-                            boids[j].numPerceivedFlockmates += 1;
-                            
-                            boids[j].avgFlockHeading += boidB.forward; // alignment
-                            
-                            boids[j].centreOfFlockmates += boidB.position; // cohesion
-
-                            if (sqrDst < avoidRadius * avoidRadius) {
-                                boids[j].avgAvoidanceHeading -= offset / sqrDst; // seperation
-                            }
-                        }
-                    }
-                }
-                
-                
-            }
-
-            ////////////////////////////////////////
-
-            for (int i = 0; i < boids.Length; i++) {
-                // boids[i].avgFlockHeading = boidData[i].flockHeading;
-                // boids[i].centreOfFlockmates = boidData[i].flockCentre;
-                // boids[i].avgAvoidanceHeading = boidData[i].avoidanceHeading; // makes the avoid eachother / objects 
-                // boids[i].numPerceivedFlockmates = boidData[i].numFlockmates;
-
-                boids[i].UpdateBoid ();
-            }
-
-            // boidBuffer.Release ();
-        }
-    }
-
-    public struct BoidData {
-        public Vector3 position;
-        public Vector3 direction;
-
-        public Vector3 flockHeading;
-        public Vector3 flockCentre;
-        public Vector3 avoidanceHeading;
-        public Vector3 separationHeading;
-
-        public int numFlockmates;
-
-        public static int Size {
-            get {
-                return sizeof (float) * 3 * 5 + sizeof (int);
-            }
-        }
-    }
-}
-
-// using System.Collections;
+﻿// using System.Collections;
 // using System.Collections.Generic;
 // using UnityEngine;
 //
@@ -128,37 +21,68 @@ public class BoidManager : MonoBehaviour {
 //     void Update () {
 //         if (boids != null) {
 //
-//             int numBoids = boids.Length;
-//             var boidData = new BoidData[numBoids];
+//             // var boidData = new BoidData[numBoids];
 //
-//             for (int i = 0; i < boids.Length; i++) {
-//                 boidData[i].position = boids[i].position;
-//                 boidData[i].direction = boids[i].forward;
+//             // for (int i = 0; i < boids.Length; i++) {
+//             //     boidData[i].position = boids[i].position;
+//             //     boidData[i].direction = boids[i].forward;
+//             // }
+//
+//             // var boidBuffer = new ComputeBuffer (numBoids, BoidData.Size);
+//             // boidBuffer.SetData (boidData);
+//             //
+//             // compute.SetBuffer (0, "boids", boidBuffer);
+//             // compute.SetInt ("numBoids", boids.Length);
+//             // compute.SetFloat ("viewRadius", settings.perceptionRadius);
+//             // compute.SetFloat ("avoidRadius", settings.avoidanceRadius);
+//             //
+//             // int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);
+//             // compute.Dispatch (0, threadGroups, 1, 1);
+//             //
+//             // boidBuffer.GetData (boidData);
+//             
+//             int numBoids = boids.Length;
+//             float viewRadius = settings.perceptionRadius;
+//             float avoidRadius = settings.avoidanceRadius;
+//
+//             for (int j = 0; j < numBoids; j++) {
+//                 
+//                 
+//                 for (int indexB = 0; indexB < numBoids; indexB++) {
+//                     if (j != indexB) {
+//                         Boid boidB = boids[indexB];
+//                         Vector3 offset = boidB.position - boids[j].position;
+//                         float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+//
+//                         if (sqrDst < viewRadius * viewRadius) {
+//                             boids[j].numPerceivedFlockmates += 1;
+//                             
+//                             boids[j].avgFlockHeading += boidB.forward; // alignment
+//                             
+//                             boids[j].centreOfFlockmates += boidB.position; // cohesion
+//
+//                             if (sqrDst < avoidRadius * avoidRadius) {
+//                                 boids[j].avgAvoidanceHeading -= offset / sqrDst; // seperation
+//                             }
+//                         }
+//                     }
+//                 }
+//                 
+//                 
 //             }
 //
-//             var boidBuffer = new ComputeBuffer (numBoids, BoidData.Size);
-//             boidBuffer.SetData (boidData);
-//
-//             compute.SetBuffer (0, "boids", boidBuffer);
-//             compute.SetInt ("numBoids", boids.Length);
-//             compute.SetFloat ("viewRadius", settings.perceptionRadius);
-//             compute.SetFloat ("avoidRadius", settings.avoidanceRadius);
-//
-//             int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);
-//             compute.Dispatch (0, threadGroups, 1, 1);
-//
-//             boidBuffer.GetData (boidData);
+//             ////////////////////////////////////////
 //
 //             for (int i = 0; i < boids.Length; i++) {
-//                 boids[i].avgFlockHeading = boidData[i].flockHeading;
-//                 boids[i].centreOfFlockmates = boidData[i].flockCentre;
-//                 boids[i].avgAvoidanceHeading = boidData[i].avoidanceHeading; // makes the avoid eachother / objects 
-//                 boids[i].numPerceivedFlockmates = boidData[i].numFlockmates;
+//                 // boids[i].avgFlockHeading = boidData[i].flockHeading;
+//                 // boids[i].centreOfFlockmates = boidData[i].flockCentre;
+//                 // boids[i].avgAvoidanceHeading = boidData[i].avoidanceHeading; // makes the avoid eachother / objects 
+//                 // boids[i].numPerceivedFlockmates = boidData[i].numFlockmates;
 //
 //                 boids[i].UpdateBoid ();
 //             }
 //
-//             boidBuffer.Release ();
+//             // boidBuffer.Release ();
 //         }
 //     }
 //
@@ -169,6 +93,8 @@ public class BoidManager : MonoBehaviour {
 //         public Vector3 flockHeading;
 //         public Vector3 flockCentre;
 //         public Vector3 avoidanceHeading;
+//         public Vector3 separationHeading;
+//
 //         public int numFlockmates;
 //
 //         public static int Size {
@@ -178,3 +104,77 @@ public class BoidManager : MonoBehaviour {
 //         }
 //     }
 // }
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BoidManager : MonoBehaviour {
+
+    const int threadGroupSize = 1024;
+
+    public BoidSettings settings;
+    public ComputeShader compute;
+    Boid[] boids;
+
+    void Start () {
+        boids = FindObjectsOfType<Boid> ();
+        foreach (Boid b in boids) {
+            b.Initialize (settings, null);
+        }
+
+    }
+
+    void Update () {
+        if (boids != null) {
+
+            int numBoids = boids.Length;
+            var boidData = new BoidData[numBoids];
+
+            for (int i = 0; i < boids.Length; i++) {
+                boidData[i].position = boids[i].position;
+                boidData[i].direction = boids[i].forward;
+            }
+
+            var boidBuffer = new ComputeBuffer (numBoids, BoidData.Size);
+            boidBuffer.SetData (boidData);
+
+            compute.SetBuffer (0, "boids", boidBuffer);
+            compute.SetInt ("numBoids", boids.Length);
+            compute.SetFloat ("viewRadius", settings.perceptionRadius);
+            compute.SetFloat ("avoidRadius", settings.avoidanceRadius);
+
+            int threadGroups = Mathf.CeilToInt (numBoids / (float) threadGroupSize);
+            compute.Dispatch (0, threadGroups, 1, 1);
+
+            boidBuffer.GetData (boidData);
+
+            for (int i = 0; i < boids.Length; i++) {
+                boids[i].avgFlockHeading = boidData[i].flockHeading;
+                boids[i].centreOfFlockmates = boidData[i].flockCentre;
+                boids[i].avgAvoidanceHeading = boidData[i].avoidanceHeading; // makes the avoid eachother / objects 
+                boids[i].numPerceivedFlockmates = boidData[i].numFlockmates;
+
+                boids[i].UpdateBoid ();
+            }
+
+            boidBuffer.Release ();
+        }
+    }
+
+    public struct BoidData {
+        public Vector3 position;
+        public Vector3 direction;
+
+        public Vector3 flockHeading;
+        public Vector3 flockCentre;
+        public Vector3 avoidanceHeading;
+        public int numFlockmates;
+
+        public static int Size {
+            get {
+                return sizeof (float) * 3 * 5 + sizeof (int);
+            }
+        }
+    }
+}

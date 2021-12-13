@@ -8,7 +8,7 @@ public class BoidManager : MonoBehaviour {
     public Material[] BoidMaterials;
     public GameObject alignmentArrow, cohesionSphere;
     private Boid[] boidArray;
-    private int numOfBoids = 1000;
+    private int numOfBoids = 200;
 
     public float AlignmentWeight, CohesionWeight, SeparationWeight, SteerWeight, BoundsRadius, CollisionAvoidDst;
     
@@ -30,27 +30,13 @@ public class BoidManager : MonoBehaviour {
             Renderer[] renderers = b.GetComponentsInChildren<Renderer>();
             if (renderers != null)
                 foreach (Renderer r in renderers) {
-                    float R = Random.Range(0.0f, 1.0f), G = Random.Range(0.0f, 1.0f), B = Random.Range(0.0f, 1.0f);
+                    // float R = Random.Range(0.0f, 1.0f), G = Random.Range(0.0f, 1.0f), B = Random.Range(0.0f, 1.0f);
                     // r.material.color = new Color(R, G, B);
-
-                    // if (i % 3 == 0) {
-                    //     r.material.color = new UnityEngine.Color(79, 9, 29); // Maroon
-                    // } else if (i % 3 == 1) {
-                    //     r.material.color = new UnityEngine.Color(20, 47, 67); // Midnight blue 
-                    // } else if (i % 3 == 2) {
-                    //     r.material.color = new UnityEngine.Color(255, 171, 76); // Gold
-                    // }
-
                     int randMatPos = Random.Range(0, BoidMaterials.Length);
+                    // int randMatPos = Random.Range(0, 2);
                     r.material = BoidMaterials[randMatPos];
-                    
                     b.SetRaceIndex(randMatPos);
-
-
-
-                    // r.material.color = Color.red;
-                }
-            
+                } // foreach
             boidArray[i] = b;
         } // for
     } // Start()
@@ -71,8 +57,10 @@ public class BoidManager : MonoBehaviour {
             b.SetBoundsRadius(BoundsRadius);
         }
 
-        alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);
-        cohesionSphere.transform.position = avgCohesionPos/numOfBoids;
+        if (alignmentArrow != null)
+            alignmentArrow.transform.rotation = Quaternion.LookRotation(avgAlign);
+        if (cohesionSphere != null)
+            cohesionSphere.transform.position = avgCohesionPos/numOfBoids;
 
         // int numBoids = boids.Length;
         // float viewRadius = settings.perceptionRadius;

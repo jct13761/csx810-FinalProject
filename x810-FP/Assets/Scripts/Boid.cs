@@ -29,7 +29,6 @@ public class Boid : MonoBehaviour {
     private float _cohesionWeight; // The weight for the cohesion rule
     private float _separateWeight; // The weight for the separate rule
 
-    // private float _viewAngle = 180.0f; 
     private float perceptionRadius = 2.5f; // The perception Radius for detecting neighbor boids 
     private float avoidanceRadius = 1f; // The avoidance Radius for avoiding neighbor boids
     private int _neighborBoids = 0; // the number of neighbor boids
@@ -95,7 +94,7 @@ public class Boid : MonoBehaviour {
         } // if
 
         // This is the collision detection for the edges of the arena box and teleports them to the other side 
-        CheckForWallCollision();
+        // CheckForWallCollision();
 
         // Calculate the velocity of the boid
         // add the time as well as any acceleration to make it move

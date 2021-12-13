@@ -1,10 +1,10 @@
 To-Do:
 
-- Make different Color Boids
 - Add more rules: 
     - Leadership
-    - Swarms (Racism)
+
 - Create Boids Playground
+
 - Add Controls for boids:
     - Alignment
     - Cohesion
@@ -13,8 +13,7 @@ To-Do:
     - Racism
     - Leadership
     - 2D Mode
-    
-    
+
 MAYBE: 
 - Make bids have cool shape (Birds, Fish, etc.) / Make Random Color boids
 - Add compute shader
