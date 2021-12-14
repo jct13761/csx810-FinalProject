@@ -23,7 +23,6 @@ public class BoidManager : MonoBehaviour {
     [Range(0.0f, 100.0f)]
     public float SteerWeight; // The steer weight for the boids rules 
     
-    
     private Boid[] boidArray; // The cached array of spawned boids
     private float CollisionAvoidDst; // the collision avoidance distance for collision avoidance
     private float BoundsRadius; // the bounds radius for collision avoidance

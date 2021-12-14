@@ -176,7 +176,6 @@ public class Boid : MonoBehaviour {
                 // calculate the distance between the self and b as a Vector3
                 Vector3 difference = bPos - thisPos;
                 
-                
                 // Alignment and Cohesion - if the distance is within the specified perception radius, and if Bias is
                 // active and b is not the same race as self... 
                 if (dist < perceptionRadius && !(_isBiasActive && b.GetRaceIndex() != this._raceIndex)) {
@@ -191,7 +190,7 @@ public class Boid : MonoBehaviour {
                     if (angle < leaderAngle && angle < 90f) {
                         leaderBoid = b;
                         leaderAngle = angle;
-                    }
+                    } // if 
                 } // if
 
                 // Separation - if the if the distance is within the specified avoidance radius...
@@ -354,5 +353,5 @@ public static class BoidHelper {
             float z = Mathf.Cos(inclination);
             directions[i] = new Vector3(x, y, z);
         } // for
-    } // if
+    } // BoidHelper
 } // BoidHelper Class
