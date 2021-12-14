@@ -292,7 +292,7 @@ public class Boid : MonoBehaviour {
     /// <param name="d">bool to set the mode</param>
     public void Set2DMode(bool d) {
         _2DMode = d;
-        if (d) this.gameObject.transform.position = new Vector3(boidPosition.x, 40, boidPosition.z);
+        if (d) this.gameObject.transform.position = new Vector3(boidPosition.x, 35, boidPosition.z);
     } // Set2DMode()
 
     /// <summary>

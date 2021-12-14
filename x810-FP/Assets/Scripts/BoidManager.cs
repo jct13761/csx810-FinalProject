@@ -55,7 +55,7 @@ public class BoidManager : MonoBehaviour {
         CohesionWeight = 1;
         SeparationWeight = 1;
         LeaderWeight = 0;
-        SteerWeight = 50;
+        SteerWeight = 25;
         BoundsRadius = 0.27f;
         CollisionAvoidDst = 15;
         
